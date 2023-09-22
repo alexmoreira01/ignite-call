@@ -43,7 +43,7 @@ export function buildNextAuthOptions(
       },
 
       async session({ session, user }) {
-        // Retornando todas as infos das sessions, porem substituindo o user
+        // Retornando todas as informações das sessions, porem substituindo o user
         return {
           ...session,
           user,
