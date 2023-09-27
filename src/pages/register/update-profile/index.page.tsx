@@ -9,8 +9,8 @@ import {
 } from '@ignite-ui/react'
 import { GetServerSideProps } from 'next'
 import { getServerSession } from 'next-auth'
-
-import router, { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -18,7 +18,6 @@ import { api } from '../../../lib/axios'
 import { buildNextAuthOptions } from '../../api/auth/[...nextauth].api'
 import { Container, Header } from '../styles'
 import { FormAnnotation, ProfileBox } from './styles'
-import { useSession } from 'next-auth/react'
 
 const updateProfileSchema = z.object({
   bio: z.string(),
@@ -42,6 +41,7 @@ export default function UpdateProfile() {
     await api.put('/users/profile', {
       bio: data.bio,
     })
+
     await router.push(`/schedule/${session.data?.user.username}`)
   }
 
