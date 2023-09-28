@@ -1,6 +1,7 @@
 import { Avatar, Heading, Text } from '@ignite-ui/react'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { prisma } from '../../../lib/prisma'
+import { ScheduleForm } from './ScheduleForm'
 import { Container, UserHeader } from './styles'
 
 interface ScheduleProps {
@@ -19,6 +20,8 @@ export default function Schedule({ user }: ScheduleProps) {
         <Heading>{user.name}</Heading>
         <Text>{user.bio}</Text>
       </UserHeader>
+
+      <ScheduleForm />
     </Container>
   )
 }
@@ -29,6 +32,7 @@ export default function Schedule({ user }: ScheduleProps) {
 
 /// porque precisamos gerar uma pagina estatica por usuario
 // Precisamos informar esse metodo para o nest, para ele saber de quais usuarios nos queremos gerar paginas estaticas no momento da build
+
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
