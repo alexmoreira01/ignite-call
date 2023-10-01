@@ -8,6 +8,7 @@ export const Container = styled(Box, {
 
   variants: {
     isTimePickerOpen: {
+      // Validação com boolean pra alterar o tamanho do container
       true: {
         gridTemplateColumns: '1fr 280px',
 
@@ -28,6 +29,8 @@ export const TimePicker = styled('div', {
   padding: '$6 $6 0',
   overflowY: 'scroll',
 
+  // Aqui não se pode utilizar heigt 100% pois se não ficara maior que o conteudo do Calendar
+  // Utilizando esse conjunto fazemos com que ela tenha todo o tamanho igual ao de Calendar da div
   position: 'absolute',
   top: 0,
   bottom: 0,
