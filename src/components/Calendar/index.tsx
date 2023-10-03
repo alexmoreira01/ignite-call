@@ -24,7 +24,12 @@ interface CalendarWeek {
 
 type CalendarWeeks = CalendarWeek[]
 
-export function Calendar() {
+interface CalendarProps {
+  selectedDate: Date | null
+  onDateSelected: (date: Date) => void
+}
+
+export function Calendar({ selectedDate, onDateSelected }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(() => {
     return dayjs().set('date', 1) // Pegando dia 1 do mes
   })
@@ -83,7 +88,8 @@ export function Calendar() {
         return { date, disabled: true }
       }),
       ...daysInMonthArray.map((date) => {
-        return { date, disabled: false }
+        // Se 23 horas e 59 minutos e 59 segundos desse dia ja passou e é anterior a new date eel ficara disabeld
+        return { date, disabled: date.endOf('day').isBefore(new Date()) }
       }),
       ...nextMonthFildArray.map((date) => {
         return { date, disabled: true }
@@ -151,7 +157,10 @@ export function Calendar() {
                 {days.map(({ date, disabled }) => {
                   return (
                     <td key={date.toString()}>
-                      <CalendarDay disabled={disabled}>
+                      <CalendarDay // Aqui a data foi passada como objeto do javascript nativo, pois não necessariamente toda a aplicação ira usar dayjs
+                        onClick={() => onDateSelected(date.toDate())}
+                        disabled={disabled}
+                      >
                         {date.get('date')}
                       </CalendarDay>
                     </td>
