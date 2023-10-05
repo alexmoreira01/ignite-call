@@ -44,6 +44,8 @@ export default async function handler(
     },
   })
 
+  console.log(userAvailability)
+
   if (!userAvailability) {
     return res.json({ availability: [] })
   }
@@ -60,5 +62,31 @@ export default async function handler(
     },
   )
 
-  return res.json({ possibleTimes })
+  // gte == greater than or equal
+  // lte == menor ou igual
+
+  const blockedTimes = await prisma.scheduling.findMany({
+    select: {
+      date: true,
+    },
+    where: {
+      user_id: user.id,
+      date: {
+        // Procurando todos os registros entre esses dois intervalos de userAvailability
+        gte: referenceDate.set('hour', startHour).toDate(),
+        lte: referenceDate.set('hour', endHour).toDate(),
+      },
+    },
+  })
+
+  // [8, 9, 10] => possibleTimes
+  // availableTimes vai passar por cada um validando se não existe nenhum blockedTimes registro na tabela onde os horarios escolhido bata com o agendamento
+  const availableTimes = possibleTimes.filter((time) => {
+    // Manter apenas quando não existe pelo menos um onde o valor seja a igual a time que é a hora possivel
+    return !blockedTimes.some(
+      (blockedTime) => blockedTime.date.getHours() === time,
+    )
+  })
+
+  return res.json({ possibleTimes, availableTimes })
 }
