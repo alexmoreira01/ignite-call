@@ -77,13 +77,23 @@ export default async function handler(
     },
   })
 
-  // [8, 9, 10] => possibleTimes
-  // availableTimes vai passar por cada um validando se não existe nenhum blockedTimes registro na tabela onde os horarios escolhido bata com o agendamento
+  // // [8, 9, 10] => possibleTimes           Antes
+  // // availableTimes vai passar por cada um validando se não existe nenhum blockedTimes registro na tabela onde os horarios escolhido bata com o agendamento
+  // const availableTimes = possibleTimes.filter((time) => {
+  //   // Manter apenas quando não existe pelo menos um onde o valor seja a igual a time que é a hora possivel
+  //   return !blockedTimes.some(
+  //     (blockedTime) => blockedTime.date.getHours() === time,
+  //   )
+  // })
+
   const availableTimes = possibleTimes.filter((time) => {
-    // Manter apenas quando não existe pelo menos um onde o valor seja a igual a time que é a hora possivel
-    return !blockedTimes.some(
+    const isTimeBlocked = blockedTimes.some(
       (blockedTime) => blockedTime.date.getHours() === time,
     )
+
+    const isTimeInPast = referenceDate.set('hour', time).isBefore(new Date()) // Se não esta no passado
+
+    return !isTimeBlocked && !isTimeInPast // estara disponivel caso não esteja bloqueada e não esteja no passado
   })
 
   return res.json({ possibleTimes, availableTimes })
